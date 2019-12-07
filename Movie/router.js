@@ -12,14 +12,29 @@ router.post("/movie", (req, res, next) =>
     .catch(error => res.status(500).json({ error }))
 );
 
-router.get("/movies", (req, res, next) =>
-  movie
-    .findAll()
-    .then(result => {
-      res.json(result);
-    })
-    .catch(error => res.status(500).json({ error }))
-);
+router.get("/movies", (req, res, next) => {
+
+
+    const limit = req.query.limit || 5
+    const offset = req.query.offset || 0
+
+    movie.findAndCountAll({ limit, offset })
+    .then(result => res.send({ events: result.rows, total: result.count }))
+    .catch(error => next(error))
+    
+
+})
+//   movie
+//     .findAll()
+//     .then(result => {
+//       res.json(result);
+//     })
+//     .catch(error => res.status(500).json({ error }))
+
+
+
+
+
 
 router.put("/movie/:id", (req, res, next) =>
   movie
